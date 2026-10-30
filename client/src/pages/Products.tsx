@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
 import { Splat } from "@/components/Brand";
-import { PageHead, Reveal } from "@/components/Bits";
+import { CatalogError, PageHead, Reveal } from "@/components/Bits";
 import { Tape } from "@/components/Tape";
 import { formatMoney, useCatalog, type CatalogProduct } from "@/lib/catalog";
 import { packImage, useFlavor } from "@/lib/store";
@@ -76,7 +76,7 @@ function Billboard({ p, index, wholesale }: { p: CatalogProduct; index: number; 
 }
 
 export default function Products() {
-  const { data } = useCatalog();
+  const { data, isError, refetch } = useCatalog();
   return (
     <>
       <PageHead kicker="Shop" title="The goods">
@@ -84,7 +84,11 @@ export default function Products() {
       </PageHead>
       <Tape tilt={-1.5} />
       <div className="bg-ink">
-        {data?.products.map((p, i) => <Billboard key={p.slug} p={p} index={i} wholesale={data.wholesale} />) ?? <div className="h-[80vh]" />}
+        {isError ? (
+          <CatalogError onRetry={() => refetch()} />
+        ) : (
+          data?.products.map((p, i) => <Billboard key={p.slug} p={p} index={i} wholesale={data.wholesale} />) ?? <div className="h-[80vh]" />
+        )}
       </div>
     </>
   );

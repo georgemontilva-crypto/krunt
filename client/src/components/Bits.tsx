@@ -182,3 +182,15 @@ export function PageHead({ kicker, title, children }: { kicker: string; title: s
     </section>
   );
 }
+
+/** Shown when the catalogue can't be loaded, instead of an empty page. */
+export function CatalogError({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-5 text-center">
+      <Mark className="w-24 animate-wobble" />
+      <p className="font-display mt-6 text-5xl">Products are taking a break.</p>
+      <p className="mt-2 max-w-md text-smoke">We couldn't load the catalog right now. Give it a second and try again.</p>
+      <button type="button" onClick={onRetry} className="btn btn-spray mt-6">Try again</button>
+    </div>
+  );
+}

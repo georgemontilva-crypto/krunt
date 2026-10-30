@@ -4,7 +4,7 @@ import { Box, Check, FlaskConical, Hand, Minus, Plus, RotateCcw, ShoppingBag, Zo
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Link, useParams } from "wouter";
-import { ComingSoonModal, FlavorPicker, Reveal } from "@/components/Bits";
+import { CatalogError, ComingSoonModal, FlavorPicker, Reveal } from "@/components/Bits";
 import { QtyStepper } from "@/components/Cart";
 import { LazyViewer } from "@/components/LazyViewer";
 import { formatMoney, useCatalog } from "@/lib/catalog";
@@ -36,7 +36,7 @@ const FACTS: Record<string, string[]> = {
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { data, isLoading } = useCatalog();
+  const { data, isLoading, isError, refetch } = useCatalog();
   const { flavor, setFlavor, color } = useFlavor();
   const cart = useCart();
   const [view, setView] = useState<ViewerView>("pack");
@@ -59,6 +59,7 @@ export default function ProductDetail() {
   const soldOut = useMemo(() => product?.variants.filter(v => !v.inStock).map(v => v.flavorKey) ?? [], [product]);
   const f = flavorByKey(flavor);
 
+  if (isError) return <div className="wall pt-24"><CatalogError onRetry={() => refetch()} /></div>;
   if (!isLoading && !product) return <NotFound />;
 
   const unit = product ? (data?.wholesale && product.wholesalePriceCents != null ? product.wholesalePriceCents : product.retailPriceCents) : 0;
