@@ -79,8 +79,8 @@ function Hero() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[22%] z-0 select-none text-center md:top-[16%]">
         <motion.p
           key={flavor}
-          initial={{ opacity: 0, scale: 1.15, filter: "blur(10px)" }}
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          initial={{ opacity: 0, scale: 1.12 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
           className="whitespace-nowrap font-[family-name:var(--font-drip)] text-[21vw] leading-none md:text-[22vw]"
           style={{ color, opacity: 0.9, textShadow: `0 0 80px ${color}55` }}
@@ -88,7 +88,7 @@ function Hero() {
           KRUNK'D
         </motion.p>
       </div>
-      <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-[100px]" style={{ background: color }} />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 opacity-60" style={{ background: `radial-gradient(closest-side, ${color}, transparent)` }} />
 
       {/* Stickers you can peel and throw around */}
       <Sticker className="left-[5%] top-[22%] h-20 w-20 bg-blood text-white md:left-[8%] md:h-28 md:w-28" rotate={-12}>

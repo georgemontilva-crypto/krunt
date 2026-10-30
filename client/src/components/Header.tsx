@@ -41,7 +41,7 @@ export function Header() {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-          scrolled || menu ? "bg-black/80 py-2 backdrop-blur-md" : "py-4"
+          scrolled || menu ? "bg-black/95 py-2 md:bg-black/80 md:backdrop-blur-md" : "py-4"
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 md:px-8">

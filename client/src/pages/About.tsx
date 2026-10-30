@@ -48,7 +48,7 @@ function Bunny() {
     <section ref={ref} className="wall grain relative overflow-hidden px-5 py-24 md:px-8 md:py-32">
       <div className="mx-auto grid max-w-7xl items-center gap-12 md:grid-cols-2">
         <motion.div style={{ rotate: rot, scale }} className="relative mx-auto w-64 md:w-96">
-          <div className="absolute inset-0 rounded-full bg-[var(--flavor)] opacity-30 blur-[80px]" />
+          <div className="absolute inset-0 glow opacity-50" />
           <Mark className="relative w-full drop-shadow-[0_0_40px_rgba(0,0,0,.8)]" />
         </motion.div>
         <div>

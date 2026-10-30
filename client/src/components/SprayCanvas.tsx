@@ -24,6 +24,19 @@ export function SprayCanvas({ color, armed, className }: { color: string; armed:
     const drips: Drip[] = [];
     let dpr = 1;
     let frame = 0;
+    // The loop only runs while there is something to animate: paint being
+    // sprayed, drips running, or fresh paint still weathering away. An idle
+    // wall costs nothing per frame.
+    let running = false;
+    let lastPaint = 0;
+    const WEATHER_MS = 9000;
+    const wake = () => {
+      lastPaint = performance.now();
+      if (!running) {
+        running = true;
+        raf = requestAnimationFrame(tick);
+      }
+    };
 
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -70,6 +83,7 @@ export function SprayCanvas({ color, armed, className }: { color: string; armed:
       down = true;
       last = pos(e);
       spray(last.x, last.y, 0);
+      wake();
     };
     const onMove = (e: PointerEvent) => {
       if (!down) return;
@@ -82,6 +96,7 @@ export function SprayCanvas({ color, armed, className }: { color: string; armed:
         for (let i = 1; i <= steps; i++) spray(last.x + (dx * i) / steps, last.y + (dy * i) / steps, dist / dpr);
       }
       last = p;
+      wake();
     };
     const onUp = () => {
       down = false;
@@ -109,9 +124,14 @@ export function SprayCanvas({ color, armed, className }: { color: string; armed:
         ctx.globalCompositeOperation = "source-over";
       }
       ctx.globalAlpha = 1;
-      raf = requestAnimationFrame(tick);
+      if (down || drips.length || performance.now() - lastPaint < WEATHER_MS) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        // Done fading: clear the last faint traces and go to sleep.
+        ctx.clearRect(0, 0, c.width, c.height);
+        running = false;
+      }
     };
-    raf = requestAnimationFrame(tick);
 
     // Listen on the whole section: the hero's content sits above the canvas.
     const surface = c.parentElement ?? c;

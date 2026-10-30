@@ -23,16 +23,20 @@ export function Tape({
     </div>
   );
   return (
-    <div className={cn("relative z-10 -mx-4 overflow-hidden py-1.5", className)} style={{ transform: `rotate(${tilt}deg)` }}>
+    // The strip is wider than the screen so its rotated ends never show a
+    // gap; this wrapper clips that overhang so the page can't scroll sideways.
+    <div className={cn("relative z-10 overflow-x-clip", className)}>
+    <div className="relative -mx-6 overflow-hidden py-1.5" style={{ transform: `rotate(${tilt}deg)` }}>
       <div className="tape absolute inset-0" />
       <div className="tape-inner relative mx-0 my-1.5 overflow-hidden border-y-4 border-black py-2">
-        <div className={cn("flex w-max", reverse ? "animate-marquee-rev" : "animate-marquee")}>
+        <div className={cn("flex w-max will-change-transform", reverse ? "animate-marquee-rev" : "animate-marquee")}>
           {row}
           {row}
           {row}
           {row}
         </div>
       </div>
+    </div>
     </div>
   );
 }

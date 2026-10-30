@@ -79,7 +79,7 @@ export default function ProductDetail() {
       <section className="relative grid min-h-[100svh] md:grid-cols-[1.25fr_1fr]">
         {/* Stage */}
         <div className="wall grain relative h-[62svh] overflow-hidden md:sticky md:top-0 md:h-[100svh]" data-cursor="drag">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-35 blur-[90px] transition-colors duration-700" style={{ background: color }} />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 opacity-50" style={{ background: `radial-gradient(closest-side, ${color}, transparent)` }} />
           <AnimatePresence mode="wait">
             <motion.p
               key={flavor}

@@ -10,7 +10,7 @@ export default function LabReports() {
   return (
     <>
       <section className="wall grain relative flex min-h-[100svh] items-center overflow-hidden px-5 pb-16 pt-32 md:px-8">
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[60vmin] w-[60vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--flavor)] opacity-25 blur-[120px]" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[60vmin] w-[60vmin] -translate-x-1/2 -translate-y-1/2 glow opacity-40" />
         {/* Bubbles rising out of the flask */}
         {Array.from({ length: 14 }).map((_, i) => (
           <motion.span

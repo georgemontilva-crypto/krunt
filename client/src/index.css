@@ -46,11 +46,30 @@ html {
   scroll-behavior: smooth;
 }
 
+/* clip (not hidden): iOS Safari ignores overflow-x:hidden on body for touch
+   panning, so a rotated tape a few px too wide let the page slide sideways. */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   font-variation-settings: "wdth" 100;
-  overflow-x: hidden;
   min-height: 100dvh;
+}
+
+/* Phones and tablets: drop the effects that cost the most per scrolled frame
+   (live background blur, blend-mode grain). Nothing reads differently. */
+@media (pointer: coarse), (max-width: 767px) {
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .grain::after {
+    display: none;
+  }
 }
 
 ::selection {
@@ -67,6 +86,12 @@ body {
 }
 
 @layer components {
+/* Soft colour glow. A radial gradient instead of filter: blur(100px), which
+   phones re-rasterise on every scroll frame. */
+.glow {
+  background: radial-gradient(closest-side, var(--flavor), transparent);
+}
+
 /* ─── Surfaces ───────────────────────────────────────────────────────────── */
 
 /* Concrete wall: layered noise + soft vignette. Pure CSS, no image request. */

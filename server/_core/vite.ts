@@ -68,6 +68,10 @@ export function serveStatic(app: Express) {
       maxAge: "1y",
     })
   );
+  // Product shots and 3D textures are big and only change with a deploy.
+  for (const dir of ["packs", "tex", "brand"]) {
+    app.use(`/${dir}`, express.static(path.join(distPath, dir), { maxAge: "7d", redirect: false }));
+  }
   // redirect:false: a folder name must never bounce a page URL to "…/".
   app.use(express.static(distPath, { maxAge: "1h", redirect: false }));
 

@@ -171,7 +171,7 @@ export function ComingSoonModal({ open, onClose }: { open: boolean; onClose: () 
 export function PageHead({ kicker, title, children }: { kicker: string; title: string; children?: ReactNode }) {
   return (
     <section className="wall grain relative overflow-hidden px-5 pb-14 pt-36 md:px-8 md:pb-20 md:pt-44">
-      <div className="pointer-events-none absolute -right-20 top-10 h-96 w-96 rounded-full bg-[var(--flavor)] opacity-20 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-20 top-10 h-96 w-96 glow opacity-30" />
       <div className="relative mx-auto max-w-7xl">
         <p className="label text-[var(--flavor)]">{kicker}</p>
         <h1 className="font-display mt-3 text-[16vw] md:text-[9rem]">
