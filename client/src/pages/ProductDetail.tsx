@@ -101,7 +101,7 @@ export default function ProductDetail() {
                 exit={{ opacity: 0 }}
                 className="label pointer-events-none absolute left-1/2 top-[22%] flex -translate-x-1/2 items-center gap-2 bg-black/70 px-3 py-2 text-[0.65rem] backdrop-blur"
               >
-                <Hand className="h-4 w-4 animate-wobble" /> Drag to spin 360°
+                <Hand className="h-4 w-4 animate-wobble" /> Drag to tilt
               </motion.div>
             )}
           </AnimatePresence>
@@ -125,16 +125,7 @@ export default function ProductDetail() {
                 </button>
               ))}
             </div>
-            <div className="hidden border-2 border-white/15 bg-black/70 p-1 backdrop-blur sm:flex">
-              {[
-                ["Front", 0],
-                ["Side", Math.PI / 2],
-                ["Back", Math.PI],
-              ].map(([l, a]) => (
-                <button key={l} type="button" onClick={() => doTurn(a as number)} className="label px-2.5 py-2 text-[0.65rem] text-paper hover:text-[var(--flavor)]">
-                  {l}
-                </button>
-              ))}
+            <div className="flex border-2 border-white/15 bg-black/70 p-1 backdrop-blur">
               <button type="button" onClick={() => setZoom(z => (z > 1 ? 1 : 1.45))} className="px-2.5 py-2 text-paper hover:text-[var(--flavor)]" aria-label={zoom > 1 ? "Zoom out" : "Zoom in"}>
                 {zoom > 1 ? <ZoomOut className="h-4 w-4" /> : <ZoomIn className="h-4 w-4" />}
               </button>

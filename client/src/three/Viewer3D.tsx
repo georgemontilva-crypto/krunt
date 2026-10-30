@@ -54,10 +54,14 @@ function Model({ slug, flavor, color, view }: { slug: string; flavor: string; co
   return <Pouch slug={slug} flavor={flavor} />;
 }
 
+/** How far the product may turn away from the camera, in radians (~30°). */
+const MAX_TURN = 0.52;
+
 /**
- * Drag-to-spin rig. Horizontal drags rotate the product with inertia; the
- * page keeps vertical scrolling on touch screens (touch-action: pan-y), so
- * the viewer never traps a thumb. Idle → slow turntable spin.
+ * Front-facing rig. The pack always faces the viewer: it sways gently on its
+ * own, leans toward the pointer, and can be tilted by dragging, but never
+ * turns past ~30°, so its thin side never shows. Touch screens keep vertical
+ * scrolling (touch-action: pan-y).
  */
 function Rig({
   children,
@@ -74,31 +78,24 @@ function Rig({
 }) {
   const group = useRef<THREE.Group>(null);
   const { gl, pointer } = useThree();
-  const s = useRef({ y: 0, x: 0, vel: 0, dragging: false, lastX: 0, lastY: 0, idle: 0, spin: 0 });
+  const s = useRef({ y: 0, x: 0, dragging: false, lastX: 0, lastY: 0, idle: 10, kick: 0 });
 
-  // A full spin whenever the flavour changes: the pack "flips" to the new art.
+  // New flavour or view: a quick wiggle-and-pop instead of a spin.
   const first = useRef(true);
   useEffect(() => {
     if (first.current) {
       first.current = false;
       return;
     }
-    s.current.y += Math.PI * 2;
+    s.current.kick = 1;
   }, [flavor]);
 
+  // Reset button: back to straight-on.
   useEffect(() => {
     if (!turn) return;
-    const st = s.current;
-    // Shortest way round to the requested angle.
-    const tau = Math.PI * 2;
-    const cur = ((st.y % tau) + tau) % tau;
-    let d = turn.angle - cur;
-    if (d > Math.PI) d -= tau;
-    if (d < -Math.PI) d += tau;
-    st.y += d;
-    st.x = 0;
-    st.vel = 0;
-    st.idle = -4;
+    s.current.y = 0;
+    s.current.x = 0;
+    s.current.idle = 10;
   }, [turn?.nonce]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -110,7 +107,6 @@ function Rig({
       st.dragging = true;
       st.lastX = e.clientX;
       st.lastY = e.clientY;
-      st.vel = 0;
       el.style.cursor = "grabbing";
     };
     const move = (e: PointerEvent) => {
@@ -119,9 +115,8 @@ function Rig({
       const dy = e.clientY - st.lastY;
       st.lastX = e.clientX;
       st.lastY = e.clientY;
-      st.y += dx * 0.012;
-      st.vel = dx * 0.012;
-      if (e.pointerType === "mouse") st.x = THREE.MathUtils.clamp(st.x + dy * 0.006, -0.45, 0.45);
+      st.y = THREE.MathUtils.clamp(st.y + dx * 0.006, -MAX_TURN, MAX_TURN);
+      if (e.pointerType === "mouse") st.x = THREE.MathUtils.clamp(st.x + dy * 0.004, -0.3, 0.3);
       st.idle = 0;
     };
     const up = () => {
@@ -141,25 +136,38 @@ function Rig({
     };
   }, [gl, mode]);
 
-  useFrame((_, dt) => {
+  useFrame(({ clock }, dt) => {
     const g = group.current;
     if (!g) return;
     const st = s.current;
+    const t = clock.elapsedTime;
+    const sway = Math.sin(t * 0.6) * 0.22;
+    st.kick = Math.max(0, st.kick - dt * 1.8);
+    const wiggle = st.kick * Math.sin(t * 16) * 0.25;
+
+    let ty: number;
+    let tx: number;
     if (mode === "hero") {
-      st.y += dt * 0.35;
-      g.rotation.y = THREE.MathUtils.damp(g.rotation.y, st.y + pointer.x * 0.6, 3, dt);
-      g.rotation.x = THREE.MathUtils.damp(g.rotation.x, -pointer.y * 0.25, 3, dt);
+      ty = sway + pointer.x * 0.25;
+      tx = -pointer.y * 0.15;
     } else {
       if (!st.dragging) {
-        st.y += st.vel;
-        st.vel *= 0.94;
         st.idle += dt;
-        if (st.idle > 2.5) st.y += dt * 0.45;
-        st.x = THREE.MathUtils.damp(st.x, 0, 1.5, dt);
+        // After letting go, ease back to centre and resume the idle sway.
+        if (st.idle > 1.5) {
+          st.y = THREE.MathUtils.damp(st.y, 0, 1.2, dt);
+          st.x = THREE.MathUtils.damp(st.x, 0, 1.2, dt);
+        }
       }
-      g.rotation.y = THREE.MathUtils.damp(g.rotation.y, st.y, 6, dt);
-      g.rotation.x = THREE.MathUtils.damp(g.rotation.x, st.x, 6, dt);
+      const idleSway = st.dragging ? 0 : sway * Math.min(1, Math.max(0, st.idle - 1.5));
+      ty = st.y + idleSway;
+      tx = st.x;
     }
+    ty = THREE.MathUtils.clamp(ty, -MAX_TURN, MAX_TURN) + wiggle;
+    g.rotation.y = THREE.MathUtils.damp(g.rotation.y, ty, 5, dt);
+    g.rotation.x = THREE.MathUtils.damp(g.rotation.x, tx, 5, dt);
+    const sc = 1 - st.kick * 0.1 * Math.sin(st.kick * Math.PI);
+    g.scale.setScalar(sc);
     g.position.y = THREE.MathUtils.damp(g.position.y, lift, 4, dt);
   });
 
@@ -216,7 +224,7 @@ export default function Viewer3D({
         <Suspense fallback={null}>
           <Rig mode={mode} flavor={`${flavor}-${view}`} turn={turn} lift={lift}>
             {mode === "hero" ? (
-              <Float speed={2} rotationIntensity={0.15} floatIntensity={0.6}>
+              <Float speed={2} rotationIntensity={0.08} floatIntensity={0.6}>
                 {model}
               </Float>
             ) : (
