@@ -13,7 +13,7 @@ const smooth = (e0: number, e1: number, x: number) => {
 
 function prepTexture(t: THREE.Texture) {
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 8;
+  t.anisotropy = 16;
   t.needsUpdate = true;
   return t;
 }
@@ -40,22 +40,30 @@ const POUCH_W = 1.34;
 const POUCH_H = 3.2;
 
 /**
- * A stand-up pouch: a plane puffed out in the middle and flat at the heat
- * seals, front and back. The silhouette (tear notches included) comes from
- * the alpha of the printed artwork.
+ * A stand-up mylar pouch. The middle is puffed out by the product, the top
+ * and bottom are flat crimped heat seals, and the sides pull in slightly as
+ * the film stretches over the belly, like a real filled bag. The outline
+ * (tear notches included) comes from the alpha of the printed artwork.
  */
 function usePouchGeometry() {
   return useMemo(() => {
-    const g = new THREE.PlaneGeometry(POUCH_W, POUCH_H, 40, 90);
+    const g = new THREE.PlaneGeometry(POUCH_W, POUCH_H, 64, 150);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
-      const u = p.getX(i) / POUCH_W + 0.5;
+      const x = p.getX(i);
+      const u = x / POUCH_W + 0.5;
       const v = p.getY(i) / POUCH_H + 0.5;
-      const across = Math.pow(Math.max(0, Math.sin(Math.PI * u)), 0.55);
-      const along = smooth(0, 0.16, v) * smooth(1, 0.88, v);
-      // Slight bottom-heavy belly, like product sitting in the pouch.
-      const belly = 1 + 0.25 * (1 - v);
-      p.setZ(i, 0.17 * across * along * belly);
+      const across = Math.pow(Math.max(0, Math.sin(Math.PI * u)), 0.42);
+      // Flat seals: bottom 6%, top 10%; soft shoulders into the belly.
+      const along = smooth(0.04, 0.2, v) * smooth(0.92, 0.74, v);
+      const belly = 1 + 0.3 * (1 - v);
+      let z = 0.24 * across * along * belly;
+      // Crimp texture on the seals: fine vertical ridges catch the light.
+      const seal = v > 0.9 || v < 0.055 ? 1 : 0;
+      z += seal * 0.0045 * Math.sin(u * POUCH_W * 260);
+      // Film shrinks sideways where it bulges.
+      p.setX(i, x * (1 - 0.05 * along * across));
+      p.setZ(i, z);
     }
     g.computeVertexNormals();
     return g;
@@ -67,23 +75,28 @@ export function Pouch({ slug, flavor }: { slug: string; flavor: string }) {
   const [front, back] = useTexture([tex(slug, flavor, "front"), tex(slug, flavor, "back")]);
   useMemo(() => [front, back].forEach(prepTexture), [front, back]);
 
+  // Glossy laminated mylar: clear coat over a slightly satin print, with a
+  // touch of self-illumination so the art stays readable when turned away.
   const mat = (map: THREE.Texture) => (
     <meshPhysicalMaterial
       map={map}
+      emissiveMap={map}
+      emissive="#ffffff"
+      emissiveIntensity={0.12}
       alphaTest={0.5}
-      roughness={0.32}
-      metalness={0.05}
+      roughness={0.42}
+      metalness={0.15}
       clearcoat={1}
-      clearcoatRoughness={0.18}
+      clearcoatRoughness={0.12}
+      sheen={0.4}
+      sheenColor="#ffffff"
       side={THREE.FrontSide}
     />
   );
   return (
     <group>
-      <mesh geometry={geo} castShadow>
-        {mat(front)}
-      </mesh>
-      <mesh geometry={geo} rotation={[0, Math.PI, 0]} castShadow>
+      <mesh geometry={geo}>{mat(front)}</mesh>
+      <mesh geometry={geo} rotation={[0, Math.PI, 0]}>
         {mat(back)}
       </mesh>
     </group>
@@ -159,10 +172,10 @@ export function Cone({ scale = 1 }: { scale?: number }) {
 
   return (
     <group scale={scale}>
-      <mesh geometry={body} castShadow>
+      <mesh geometry={body} >
         <meshStandardMaterial map={paper} roughness={0.92} bumpMap={paper} bumpScale={0.6} />
       </mesh>
-      <mesh geometry={crutch} castShadow>
+      <mesh geometry={crutch} >
         <meshStandardMaterial map={print} roughness={0.5} />
       </mesh>
     </group>
@@ -185,10 +198,9 @@ export function Tube({ slug, flavor, open }: { slug: string; flavor: string; ope
   useMemo(() => {
     prepTexture(wrap);
     wrap.wrapS = THREE.RepeatWrapping;
-    // The cylinder's UVs run the other way round from the unwrapped artwork:
-    // flip it, and offset so the readable half faces the camera at rest.
-    wrap.repeat.x = -1;
-    wrap.offset.x = 0.75;
+    // The wrap is [front photo, 150°][back label, 210°]. The cylinder's u=0
+    // faces the camera, so shift the front's centre (75° in) onto it.
+    wrap.offset.x = 75 / 360;
   }, [wrap]);
 
   const cap = useRef<THREE.Group>(null);
@@ -215,13 +227,13 @@ export function Tube({ slug, flavor, open }: { slug: string; flavor: string; ope
 
   return (
     <group>
-      <mesh position={[0, y0 + BASE_H / 2, 0]} castShadow>
+      <mesh position={[0, y0 + BASE_H / 2, 0]} >
         <cylinderGeometry args={[TUBE_R * 1.01, TUBE_R * 1.01, BASE_H, 64]} />
         {black}
       </mesh>
-      <mesh position={[0, y0 + BASE_H + LABEL_H / 2, 0]} castShadow>
+      <mesh position={[0, y0 + BASE_H + LABEL_H / 2, 0]} >
         <cylinderGeometry args={[TUBE_R, TUBE_R, LABEL_H, 96, 1, true]} />
-        <meshPhysicalMaterial map={wrap} roughness={0.38} clearcoat={0.8} clearcoatRoughness={0.25} side={THREE.FrontSide} />
+        <meshPhysicalMaterial map={wrap} emissiveMap={wrap} emissive="#ffffff" emissiveIntensity={0.1} roughness={0.4} clearcoat={0.9} clearcoatRoughness={0.15} side={THREE.FrontSide} />
       </mesh>
       {/* Inner wall, seen when the cap is off. */}
       <mesh position={[0, y0 + BASE_H + LABEL_H / 2, 0]}>
@@ -229,7 +241,7 @@ export function Tube({ slug, flavor, open }: { slug: string; flavor: string; ope
         <meshStandardMaterial color="#050505" side={THREE.BackSide} />
       </mesh>
       <group ref={cap}>
-        <mesh castShadow>
+        <mesh >
           <cylinderGeometry args={[TUBE_R * 1.06, TUBE_R * 1.06, CAP_H, 64]} />
           {black}
         </mesh>
@@ -284,11 +296,11 @@ export function Device({ accent }: { accent: string }) {
   const shell = <meshPhysicalMaterial color="#141416" roughness={0.6} metalness={0.25} clearcoat={0.3} clearcoatRoughness={0.6} />;
   return (
     <group>
-      <RoundedBox args={[DEV_W, DEV_H, DEV_D]} radius={0.13} smoothness={6} castShadow>
+      <RoundedBox args={[DEV_W, DEV_H, DEV_D]} radius={0.13} smoothness={6} >
         {shell}
       </RoundedBox>
       {/* Mouthpiece */}
-      <RoundedBox args={[DEV_W * 0.78, 0.5, DEV_D * 0.86]} radius={0.12} smoothness={6} position={[0, DEV_H / 2 + 0.2, 0]} castShadow>
+      <RoundedBox args={[DEV_W * 0.78, 0.5, DEV_D * 0.86]} radius={0.12} smoothness={6} position={[0, DEV_H / 2 + 0.2, 0]} >
         <meshPhysicalMaterial color="#0a0a0a" roughness={0.25} clearcoat={1} />
       </RoundedBox>
       <mesh position={[0, DEV_H / 2 + 0.455, 0]} rotation={[Math.PI / 2, 0, 0]}>

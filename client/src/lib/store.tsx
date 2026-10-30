@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 /* ─── Media paths ────────────────────────────────────────────────────────── */
 
-export const packImage = (slug: string, flavor: string) => `/products/${slug}/${flavor}.webp`;
+export const packImage = (slug: string, flavor: string) => `/packs/${slug}/${flavor}.webp`;
 export const tex = (slug: string, flavor: string, part: "front" | "back" | "wrap") =>
   `/tex/${slug}-${flavor}-${part}.webp`;
 

@@ -22,11 +22,13 @@ export type ViewerProps = {
 function Lights({ color }: { color: string }) {
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[3, 5, 4]} intensity={1.6} />
-      <directionalLight position={[-4, 2, -3]} intensity={0.9} color={color} />
+      <ambientLight intensity={0.55} />
+      <directionalLight position={[3, 5, 6]} intensity={1.5} />
+      <directionalLight position={[-4, 3, -5]} intensity={1.3} />
+      <directionalLight position={[-5, 0, 2]} intensity={0.7} color={color} />
       <Environment resolution={256} frames={1}>
         <Lightformer form="rect" intensity={3} position={[0, 4, 3]} scale={[6, 2, 1]} />
+        <Lightformer form="rect" intensity={1.6} position={[0, 2, -5]} scale={[6, 4, 1]} />
         <Lightformer form="rect" intensity={2.2} position={[-4, 0, 2]} rotation-y={Math.PI / 3} scale={[2, 6, 1]} />
         <Lightformer form="rect" intensity={2.2} color={color} position={[4, 0, -1]} rotation-y={-Math.PI / 2.5} scale={[2, 6, 1]} />
         <Lightformer form="ring" intensity={1.2} position={[0, -3, 4]} scale={3} />
@@ -207,7 +209,7 @@ export default function Viewer3D({
         frameloop={visible ? "always" : "never"}
         dpr={[1, 1.75]}
         camera={{ position: [0, 0, 8.6], fov: 30 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance", toneMapping: THREE.NeutralToneMapping, toneMappingExposure: 1.05 }}
 
       >
         <Lights color={color} />
