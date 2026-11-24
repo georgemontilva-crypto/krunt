@@ -1,10 +1,10 @@
-import { FLAVORS, flavorByKey, type FlavorKey, type ProductKind } from "@shared/const";
+import { FLAVORS, flavorByKey, LAB_REPORTS_URL, type FlavorKey, type ProductKind } from "@shared/const";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { ArrowDown, ArrowRight, BadgeCheck, FlaskConical, Leaf, ShieldCheck, Sparkles, SprayCan, Sprout } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link } from "wouter";
 import { Drips, Mark, Splat } from "@/components/Brand";
-import { ComingSoonModal, FlavorPicker, Reveal, SlamText, TiltCard } from "@/components/Bits";
+import { Reveal, SlamText, TiltCard } from "@/components/Bits";
 import { LazyViewer } from "@/components/LazyViewer";
 import { SprayCanvas } from "@/components/SprayCanvas";
 import { Tape } from "@/components/Tape";
@@ -388,13 +388,12 @@ function PopTheTop() {
 /* ─── Why ────────────────────────────────────────────────────────────────── */
 
 function Why() {
-  const [soon, setSoon] = useState(false);
   const items = [
     { icon: Sprout, t: "Indoor grown", d: "Botanicals raised under lights, not luck." },
     { icon: Leaf, t: "Pesticide free", d: "Nothing on it you'd need to Google." },
     { icon: Sparkles, t: "Blue Lotus infused", d: "Every pack. Every pull." },
     { icon: ShieldCheck, t: "Premium quality", d: "Hand-checked, sealed, smell-proof." },
-    { icon: FlaskConical, t: "Lab tested", d: "Third-party tested, batch by batch.", action: () => setSoon(true) },
+    { icon: FlaskConical, t: "Lab tested", d: "Third-party tested, batch by batch.", action: () => window.open(LAB_REPORTS_URL, "_blank", "noopener,noreferrer") },
     { icon: BadgeCheck, t: "21+ only", d: "Grown folks only. We check." },
   ];
   return (
@@ -429,7 +428,6 @@ function Why() {
           ))}
         </div>
       </div>
-      <ComingSoonModal open={soon} onClose={() => setSoon(false)} />
     </section>
   );
 }

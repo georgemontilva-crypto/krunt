@@ -1,8 +1,6 @@
 import { FLAVORS, type FlavorKey } from "@shared/const";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "motion/react";
-import { FlaskConical, X } from "lucide-react";
 import { useRef, type ReactNode } from "react";
-import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import { Mark } from "./Brand";
 
@@ -122,49 +120,6 @@ export function TiltCard({ children, className, glare = true }: { children: Reac
       {children}
       {glare && <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: bg }} />}
     </motion.div>
-  );
-}
-
-/** "Lab reports are on the way" — shown wherever a lab report link is clicked. */
-export function ComingSoonModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 p-5 backdrop-blur-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="soon-title"
-        >
-          <motion.div
-            className="wall relative w-full max-w-md border-4 border-[var(--flavor)] p-8 text-center"
-            initial={{ scale: 0.6, rotate: -8 }}
-            animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0.6, rotate: 8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 260, damping: 18 }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button type="button" onClick={onClose} className="absolute right-3 top-3 p-2" aria-label="Close">
-              <X className="h-5 w-5" />
-            </button>
-            <div className="relative mx-auto w-28">
-              <Mark className="w-28" />
-              <FlaskConical className="absolute -bottom-2 -right-4 h-12 w-12 rotate-12 text-[var(--flavor)]" strokeWidth={2.5} />
-            </div>
-            <p className="label mt-6 text-[var(--flavor)]">Lab reports</p>
-            <h2 id="soon-title" className="font-display mt-1 animate-flicker text-6xl spray-glow">Coming soon</h2>
-            <p className="mt-3 text-smoke">Every batch is lab tested. The certificates are getting their final stamp and will be posted here.</p>
-            <Link href="/contact" onClick={onClose} className="btn btn-spray mt-6">
-              Need one now? Ask us
-            </Link>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }
 

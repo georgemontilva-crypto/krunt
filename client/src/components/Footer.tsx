@@ -1,8 +1,7 @@
 import { AtSign, Mail, MapPin, Phone } from "lucide-react";
-import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Drips, Logo } from "./Brand";
-import { NAV } from "./Header";
+import { NAV, NavLink } from "./Header";
 
 export function Footer() {
   const s = trpc.site.settings.useQuery(undefined, { staleTime: 5 * 60_000 }).data;
@@ -36,9 +35,9 @@ export function Footer() {
           <ul className="mt-4 space-y-2">
             {[...NAV, { href: "/wholesale", label: "Wholesale" }].map(n => (
               <li key={n.href}>
-                <Link href={n.href} className="font-display text-2xl hover:text-[var(--flavor)]">
+                <NavLink item={n} className="font-display text-2xl hover:text-[var(--flavor)]">
                   {n.label}
-                </Link>
+                </NavLink>
               </li>
             ))}
           </ul>

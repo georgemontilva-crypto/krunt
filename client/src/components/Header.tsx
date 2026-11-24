@@ -5,15 +5,32 @@ import { Link, useLocation } from "wouter";
 import { useCart } from "@/lib/store";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
+import { LAB_REPORTS_URL } from "@shared/const";
 import { Logo, Mark } from "./Brand";
 
-export const NAV = [
+export const NAV: { href: string; label: string; external?: boolean }[] = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/products", label: "Products" },
-  { href: "/lab-reports", label: "Lab Reports" },
+  { href: LAB_REPORTS_URL, label: "Lab Reports", external: true },
   { href: "/contact", label: "Contact" },
 ];
+
+/** Internal route → wouter Link; external URL → plain link in a new tab. */
+export function NavLink({ item, className, children, ...rest }: { item: { href: string; external?: boolean }; className?: string; children: React.ReactNode; "data-text"?: string }) {
+  if (item.external) {
+    return (
+      <a href={item.href} target="_blank" rel="noopener noreferrer" className={className} {...rest}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={item.href} className={className} {...rest}>
+      {children}
+    </Link>
+  );
+}
 
 export function Header() {
   const [loc] = useLocation();
@@ -33,7 +50,7 @@ export function Header() {
     document.body.style.overflow = menu ? "hidden" : "";
   }, [menu]);
 
-  const isActive = (href: string) => (href === "/" ? loc === "/" : loc.startsWith(href));
+  const isActive = (href: string) => (href.startsWith("http") ? false : href === "/" ? loc === "/" : loc.startsWith(href));
   const wholesaleLabel = me.data?.status === "approved" ? "Wholesale ✓" : "Wholesale";
 
   return (
@@ -51,9 +68,9 @@ export function Header() {
 
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
             {NAV.map(n => (
-              <Link
+              <NavLink
                 key={n.href}
-                href={n.href}
+                item={n}
                 data-text={n.label}
                 className={cn(
                   "glitch label relative px-3 py-2 text-[0.8rem] transition-colors",
@@ -64,7 +81,7 @@ export function Header() {
                 {isActive(n.href) && (
                   <motion.span layoutId="nav-underline" className="absolute inset-x-3 -bottom-0.5 h-[3px] bg-[var(--flavor)]" />
                 )}
-              </Link>
+              </NavLink>
             ))}
           </nav>
 
@@ -127,10 +144,10 @@ export function Header() {
                   animate={{ x: 0, opacity: 1, rotate: 0 }}
                   transition={{ delay: 0.15 + i * 0.05, type: "spring", stiffness: 260, damping: 20 }}
                 >
-                  <Link href={n.href} className="font-display block py-1 text-[3.3rem] leading-none">
+                  <NavLink item={n} className="font-display block py-1 text-[3.3rem] leading-none">
                     {isActive(n.href) && <span className="mr-2">→</span>}
                     {n.label}
-                  </Link>
+                  </NavLink>
                 </motion.div>
               ))}
             </nav>

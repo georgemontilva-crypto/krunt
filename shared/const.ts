@@ -6,6 +6,10 @@ export const THIRTY_DAYS_MS = 1000 * 60 * 60 * 24 * 30;
 export const BRAND_NAME = "Krunk'd";
 export const BRAND_TAGLINE = "Get Krunk'd. Stay Legendary.";
 
+/** Every "Lab Report" button opens this shared Dropbox folder (new tab). */
+export const LAB_REPORTS_URL =
+  "https://www.dropbox.com/scl/fo/cv4o9gdup08u0j1esrvfz/ABOYFsfWB1ABixJjy2E_EZ0?rlkey=1o8domgfc1agqdogp1zmpvy7g&st=ztij7x2q&dl=0";
+
 /** Brand colours, sampled from the logo artwork. */
 export const LIME = "#c4da45";
 export const BLOOD = "#fe0308";

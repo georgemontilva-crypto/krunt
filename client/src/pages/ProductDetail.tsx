@@ -1,10 +1,10 @@
-import { flavorByKey, FLAVORS, RETAIL_MAX_QTY, type FlavorKey } from "@shared/const";
+import { flavorByKey, FLAVORS, LAB_REPORTS_URL, RETAIL_MAX_QTY, type FlavorKey } from "@shared/const";
 import { AnimatePresence, motion } from "motion/react";
 import { Box, Check, FlaskConical, Hand, Minus, Plus, RotateCcw, ShoppingBag, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Link, useParams } from "wouter";
-import { CatalogError, ComingSoonModal, FlavorPicker, Reveal } from "@/components/Bits";
+import { CatalogError, FlavorPicker, Reveal } from "@/components/Bits";
 import { QtyStepper } from "@/components/Cart";
 import { LazyViewer } from "@/components/LazyViewer";
 import { formatMoney, useCatalog } from "@/lib/catalog";
@@ -42,7 +42,6 @@ export default function ProductDetail() {
   const [view, setView] = useState<ViewerView>("pack");
   const [turn, setTurn] = useState<{ angle: number; nonce: number }>();
   const [zoom, setZoom] = useState(1);
-  const [soon, setSoon] = useState(false);
   const [hint, setHint] = useState(true);
 
   const product = data?.products.find(p => p.slug === slug);
@@ -182,13 +181,13 @@ export default function ProductDetail() {
                 </button>
               </div>
 
-              <button type="button" onClick={() => setSoon(true)} className="mt-4 flex w-full items-center justify-between border-2 border-white/15 px-4 py-4 text-left transition hover:border-[var(--flavor)]">
+              <a href={LAB_REPORTS_URL} target="_blank" rel="noopener noreferrer" className="mt-4 flex w-full items-center justify-between border-2 border-white/15 px-4 py-4 text-left transition hover:border-[var(--flavor)]">
                 <span className="flex items-center gap-3">
                   <FlaskConical className="h-5 w-5 text-[var(--flavor)]" />
                   <span className="label">Lab report · {f.name}</span>
                 </span>
                 <span className="label text-smoke">View →</span>
-              </button>
+              </a>
 
               <div className="mt-10 border-t-2 border-white/10 pt-8">
                 <p className="text-paper/90">{product.description}</p>
@@ -269,7 +268,6 @@ export default function ProductDetail() {
           </button>
         </div>
       )}
-      <ComingSoonModal open={soon} onClose={() => setSoon(false)} />
     </div>
   );
 }
