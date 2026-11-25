@@ -2,6 +2,8 @@ import { AtSign, Mail, MapPin, Phone } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { Drips, Logo } from "./Brand";
 import { NAV, NavLink } from "./Header";
+import { POLICIES } from "@shared/policies";
+import { Link } from "wouter";
 
 export function Footer() {
   const s = trpc.site.settings.useQuery(undefined, { staleTime: 5 * 60_000 }).data;
@@ -11,7 +13,7 @@ export function Footer() {
         <div className="h-3 bg-[var(--flavor)]" />
         <Drips className="h-16 -mt-px" count={18} seed={7} />
       </div>
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 pb-10 pt-6 md:grid-cols-[1.4fr_1fr_1fr] md:px-8">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 pb-10 pt-6 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:px-8">
         <div>
           <Logo className="w-56" />
           <p className="mt-5 max-w-sm text-smoke">
@@ -38,6 +40,18 @@ export function Footer() {
                 <NavLink item={n} className="font-display text-2xl hover:text-[var(--flavor)]">
                   {n.label}
                 </NavLink>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="label text-[var(--flavor)]">Policies</p>
+          <ul className="mt-4 space-y-2">
+            {POLICIES.map(p => (
+              <li key={p.slug}>
+                <Link href={`/policies/${p.slug}`} className="text-paper/90 hover:text-[var(--flavor)]">
+                  {p.title}
+                </Link>
               </li>
             ))}
           </ul>

@@ -83,7 +83,13 @@ export default function Checkout() {
             <Field label="Order notes" className="md:col-span-2"><Textarea name="notes" maxLength={2000} className="min-h-24" /></Field>
             <label className="flex items-start gap-3 md:col-span-2">
               <input type="checkbox" checked={age} onChange={e => setAge(e.target.checked)} className="mt-1 h-5 w-5 accent-[var(--flavor)]" required />
-              <span className="text-sm">I confirm I am 21 years of age or older and that these products are legal where I live.</span>
+              <span className="text-sm">
+                I confirm I am 21 years of age or older, that these products are legal where I live, and I agree to the{" "}
+                <a href="/policies/terms" target="_blank" rel="noopener" className="underline hover:text-[var(--flavor)]">Terms of Service</a>,{" "}
+                <a href="/policies/privacy" target="_blank" rel="noopener" className="underline hover:text-[var(--flavor)]">Privacy Policy</a>,{" "}
+                <a href="/policies/shipping" target="_blank" rel="noopener" className="underline hover:text-[var(--flavor)]">Shipping Policy</a> and{" "}
+                <a href="/policies/returns" target="_blank" rel="noopener" className="underline hover:text-[var(--flavor)]">Returns &amp; Refunds Policy</a>.
+              </span>
             </label>
           </form>
 

@@ -18,6 +18,7 @@ const Wholesale = lazy(() => import("@/pages/Wholesale"));
 const Checkout = lazy(() => import("@/pages/Checkout"));
 const OrderPage = lazy(() => import("@/pages/Order"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+const Policy = lazy(() => import("@/pages/Policy"));
 const AdminApp = lazy(() => import("@/pages/admin/AdminApp"));
 
 function ScrollTop() {
@@ -48,6 +49,7 @@ function PublicSite() {
             <Route path="/wholesale" component={Wholesale} />
             <Route path="/checkout" component={Checkout} />
             <Route path="/order/:number" component={OrderPage} />
+            <Route path="/policies/:slug" component={Policy} />
             <Route component={NotFound} />
           </Switch>
         </Suspense>

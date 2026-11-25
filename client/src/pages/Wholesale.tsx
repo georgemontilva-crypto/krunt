@@ -169,7 +169,11 @@ function Forms() {
                 <button type="submit" className="btn btn-spray w-full" disabled={apply.isPending}>
                   {apply.isPending ? "Submitting…" : "Submit application"}
                 </button>
-                <p className="mt-3 text-xs text-smoke">Every account is reviewed by hand. You'll get an email when it's approved.</p>
+                <p className="mt-3 text-xs text-smoke">
+                  Every account is reviewed by hand. You'll get an email when it's approved. By applying you agree to our{" "}
+                  <Link href="/policies/terms" className="underline">Terms of Service</Link> and{" "}
+                  <Link href="/policies/privacy" className="underline">Privacy Policy</Link>.
+                </p>
               </div>
             </form>
           ) : (
