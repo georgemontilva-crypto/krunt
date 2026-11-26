@@ -2,7 +2,7 @@ import { ContactShadows, Environment, Float, Lightformer } from "@react-three/dr
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Cone, Device, Pouch, Tube } from "./models";
+import { Cone, Device, Jar, Pouch, Tube } from "./models";
 
 export type ViewerView = "pack" | "device" | "cone" | "open";
 
@@ -54,6 +54,7 @@ function Model({ slug, flavor, color, view }: { slug: string; flavor: string; co
       </group>
     );
   if (slug === "preroll-tube") return <Tube slug={slug} flavor={flavor} open={view === "open"} />;
+  if (slug === "flower-jar") return <Jar flavor={flavor} />;
   return <Pouch slug={slug} flavor={flavor} />;
 }
 
@@ -211,7 +212,7 @@ export default function Viewer3D({
   }, []);
 
   const lift = slug === "preroll-tube" && view === "open" ? -0.85 : 0;
-  const shadowY = slug === "preroll-tube" ? -1.85 : view === "device" ? -1.65 : -1.75;
+  const shadowY = slug === "preroll-tube" ? -1.85 : slug === "flower-jar" ? -1.55 : view === "device" ? -1.65 : -1.75;
   const model = <Model slug={slug} flavor={flavor} color={color} view={view} />;
 
   return (

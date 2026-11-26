@@ -115,7 +115,7 @@ export default function Products() {
   return (
     <>
       <PageHead kicker="Shop" title="The goods">
-        <p className="mt-6 max-w-xl text-lg text-smoke">Three formats, six flavors, one attitude. Pick a format, pick a flavor, spin it in 3D.</p>
+        <p className="mt-6 max-w-xl text-lg text-smoke">Four formats, six flavors, one attitude. Pick a format, pick a flavor, spin it in 3D.</p>
       </PageHead>
       <Tape tilt={-1.5} />
       <div className="bg-ink">

@@ -1,4 +1,4 @@
-import { flavorByKey, FLAVORS, LAB_REPORTS_URL, RETAIL_MAX_QTY, type FlavorKey } from "@shared/const";
+import { flavorByKey, FLAVORS, JAR_STRAIN, LAB_REPORTS_URL, RETAIL_MAX_QTY, type FlavorKey } from "@shared/const";
 import { AnimatePresence, motion } from "motion/react";
 import { Box, Check, FlaskConical, Hand, Minus, Plus, RotateCcw, ShoppingBag, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -26,12 +26,14 @@ const VIEWS: Record<string, { v: ViewerView; label: string }[]> = {
     { v: "pack", label: "Closed" },
     { v: "open", label: "Pop it" },
   ],
+  "flower-jar": [{ v: "pack", label: "Jar" }],
 };
 
 const FACTS: Record<string, string[]> = {
   disposable: ["Premium botanical blend", "Blue Lotus infused", "Pull-activated, no buttons", "Rechargeable", "Pesticide free", "Lab tested"],
   "preroll-pack": ["2 hand-finished cones", "Indoor grown", "Blue Lotus infused", "Branded crutch", "Pesticide free", "Lab tested"],
   "preroll-tube": ["1 premium cone", "Crush-proof tube", "Child-resistant cap", "Blue Lotus infused", "Pesticide free", "Lab tested"],
+  "flower-jar": ["Premium indoor CBG", "Indoor grown", "Glass jar", "Premium quality", "Pesticide free", "Lab tested"],
 };
 
 export default function ProductDetail() {
@@ -154,7 +156,14 @@ export default function ProductDetail() {
                   {f.name}
                 </motion.h1>
               </AnimatePresence>
-              <p className="mt-2 text-xl font-bold">{product.name}</p>
+              <p className="mt-2 flex flex-wrap items-center gap-3 text-xl font-bold">
+                {product.name}
+                {product.slug === "flower-jar" && JAR_STRAIN[flavor] && (
+                  <span className="label border-2 px-2 py-1 text-[0.65rem]" style={{ borderColor: color, color }}>
+                    {JAR_STRAIN[flavor]}
+                  </span>
+                )}
+              </p>
               <p className="mt-3 text-smoke">{f.notes}</p>
 
               <div className="mt-6 flex items-end gap-3">

@@ -16,6 +16,7 @@ const LINES: { slug: ProductKind; label: string }[] = [
   { slug: "disposable", label: "Disposable" },
   { slug: "preroll-pack", label: "2 Pack" },
   { slug: "preroll-tube", label: "Tube" },
+  { slug: "flower-jar", label: "Jar" },
 ];
 
 /* ─── Hero: the wall ─────────────────────────────────────────────────────── */
@@ -202,16 +203,16 @@ function Lineup() {
           </h2>
         </Reveal>
       </div>
-      <div className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-6 md:mx-auto md:grid md:max-w-7xl md:grid-cols-3 md:gap-8 md:overflow-visible md:px-8">
+      <div className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-6 md:mx-auto md:grid md:max-w-7xl md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-6 md:overflow-visible md:px-8">
         {LINES.map((l, i) => {
           const p = data?.products.find(x => x.slug === l.slug);
           return (
-            <Reveal key={l.slug} delay={i * 0.1} className="w-[78vw] shrink-0 snap-center md:w-auto">
-              <Link href={`/products/${l.slug}`} className="group block">
-                <TiltCard className="overflow-hidden border-4 border-white/10 bg-wall transition-colors group-hover:border-[var(--flavor)]">
+            <Reveal key={l.slug} delay={i * 0.1} className="w-[78vw] shrink-0 snap-center md:w-auto [&>a]:h-full">
+              <Link href={`/products/${l.slug}`} className="group block h-full">
+                <TiltCard className="flex h-full flex-col overflow-hidden border-4 border-white/10 bg-wall transition-colors group-hover:border-[var(--flavor)]">
                   <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden">
                     <Splat seed={i + 2} className="absolute h-[85%] w-[85%] text-[var(--flavor)] opacity-25 transition-all duration-500 group-hover:scale-110 group-hover:opacity-90" />
-                    <span className="font-display absolute left-4 top-3 text-7xl text-white/10">0{i + 1}</span>
+                    <span className="font-display absolute left-4 top-3 text-6xl text-white/10">0{i + 1}</span>
                     <motion.img
                       key={flavor}
                       initial={{ y: 30, opacity: 0, rotate: -6 }}
@@ -222,7 +223,7 @@ function Lineup() {
                       className="relative h-[82%] w-auto object-contain drop-shadow-[0_25px_30px_rgba(0,0,0,.7)] transition-transform duration-500 [transform:translateZ(60px)] group-hover:-translate-y-3 group-hover:rotate-[-4deg] group-hover:scale-105"
                     />
                   </div>
-                  <div className="flex items-end justify-between gap-3 border-t-4 border-white/10 p-5">
+                  <div className="flex flex-1 items-end justify-between gap-3 border-t-4 border-white/10 p-5">
                     <div>
                       <h3 className="font-display text-4xl">{p?.shortName ?? l.label}</h3>
                       <p className="mt-1 text-sm text-smoke">{p?.tagline}</p>
@@ -257,7 +258,7 @@ function FlavorWall() {
             <p className="label text-[var(--flavor)]">The flavor wall</p>
             <h2 className="font-display mt-2 text-[13vw] md:text-[7rem]">Six ways to lose it</h2>
           </div>
-          <p className="max-w-xs text-smoke">Every flavor comes as a disposable, a 2 pack and a tube. Tap one to crack it open.</p>
+          <p className="max-w-xs text-smoke">Every flavor comes as a disposable, a 2 pack, a tube and a 3.5g jar. Tap one to crack it open.</p>
         </Reveal>
       </div>
       <ul className="mt-12 border-t-2 border-white/10">
@@ -309,7 +310,7 @@ function FlavorWall() {
                           ))}
                         </div>
                       </div>
-                      <div className="flex h-56 items-end justify-center gap-2 md:h-72 md:gap-6">
+                      <div className="flex h-48 items-end justify-center gap-1 sm:h-56 md:h-72 md:gap-5">
                         {LINES.map((l, j) => (
                           <motion.img
                             key={l.slug}
@@ -319,7 +320,7 @@ function FlavorWall() {
                             initial={{ y: 120, rotate: (j - 1) * 14 }}
                             animate={{ y: 0, rotate: (j - 1) * 6 }}
                             transition={{ delay: 0.1 + j * 0.07, type: "spring", stiffness: 200, damping: 16 }}
-                            className="h-full w-auto object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,.45)]"
+                            className="h-full w-auto min-w-0 max-w-[27%] object-contain object-bottom drop-shadow-[0_20px_20px_rgba(0,0,0,.45)]"
                           />
                         ))}
                       </div>

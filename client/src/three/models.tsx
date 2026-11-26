@@ -103,6 +103,49 @@ export function Pouch({ slug, flavor }: { slug: string; flavor: string }) {
   );
 }
 
+/* ─── 3.5g glass jar ─────────────────────────────────────────────────────── */
+
+const JAR_H = 3.0;
+const JAR_R = (JAR_H * (698 / 924)) / 2;
+
+/**
+ * The jar is built from its product photo: a cylinder with the photo
+ * projected straight on from the front, so at the viewer's angles (it never
+ * turns past ~30°) it reads exactly like the shot, with real depth and light
+ * sweeping across the glass. The silhouette (lid, glass edges) comes from
+ * the photo's alpha.
+ */
+export function Jar({ flavor }: { flavor: string }) {
+  const map = useTexture(tex("flower-jar", flavor, "front"));
+  useMemo(() => prepTexture(map), [map]);
+  const geo = useMemo(() => {
+    const g = new THREE.CylinderGeometry(JAR_R, JAR_R, JAR_H, 96, 1, true);
+    const p = g.attributes.position;
+    const uv = g.attributes.uv;
+    for (let i = 0; i < p.count; i++) {
+      // Orthographic projection from the front: u follows x, v follows y.
+      uv.setXY(i, p.getX(i) / (2 * JAR_R) + 0.5, p.getY(i) / JAR_H + 0.5);
+    }
+    uv.needsUpdate = true;
+    return g;
+  }, []);
+  return (
+    <mesh geometry={geo}>
+      <meshPhysicalMaterial
+        map={map}
+        emissiveMap={map}
+        emissive="#ffffff"
+        emissiveIntensity={0.35}
+        alphaTest={0.5}
+        roughness={0.25}
+        clearcoat={1}
+        clearcoatRoughness={0.08}
+        side={THREE.FrontSide}
+      />
+    </mesh>
+  );
+}
+
 /* ─── Pre-roll cone ──────────────────────────────────────────────────────── */
 
 /** Profile of a cone pre-roll, filter at y=0, twisted tip at the top. */

@@ -65,7 +65,7 @@ export function flavorByKey(key: string) {
 
 /* ─── Product line ──────────────────────────────────────────────────────── */
 
-export const PRODUCT_KINDS = ["disposable", "preroll-pack", "preroll-tube"] as const;
+export const PRODUCT_KINDS = ["disposable", "preroll-pack", "preroll-tube", "flower-jar"] as const;
 export type ProductKind = (typeof PRODUCT_KINDS)[number];
 
 /**
@@ -124,7 +124,30 @@ export const SEED_PRODUCTS: {
     caseSize: 20,
     sortOrder: 3,
   },
+  {
+    slug: "flower-jar",
+    name: "Premium Indoor CBG Flower 3.5g Jar",
+    shortName: "3.5g Jar",
+    tagline: "Glass jar. Loud flower.",
+    description:
+      "3.5 grams of premium indoor-grown CBG flower, sealed in a Krunk'd glass jar. Indoor grown, pesticide free and lab tested. Good plants, higher vibes.",
+    netWeight: "3.5 grams",
+    retailPriceCents: 3499,
+    wholesalePriceCents: 1700,
+    caseSize: 10,
+    sortOrder: 4,
+  },
 ];
+
+/** Strain type printed on each 3.5g jar label. */
+export const JAR_STRAIN: Record<string, "Hybrid" | "Sativa" | "Indica"> = {
+  "bacio-gelato": "Hybrid",
+  "big-nasty": "Sativa",
+  "blue-skittles": "Indica",
+  "candy-gas": "Hybrid",
+  "king-louis": "Indica",
+  "paris-og": "Indica",
+};
 
 /* ─── Orders ────────────────────────────────────────────────────────────── */
 
