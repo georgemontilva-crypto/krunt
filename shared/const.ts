@@ -93,7 +93,7 @@ export const SEED_PRODUCTS: {
     description:
       "A rechargeable, ready-to-go 1 g disposable filled with Krunk'd's premium botanical blend, infused with Blue Lotus. Pull-activated, no buttons, no setup: open the pouch and hit it.",
     netWeight: "1 gram (0.035 oz)",
-    retailPriceCents: 2999,
+    retailPriceCents: 3999,
     wholesalePriceCents: 1400,
     caseSize: 10,
     sortOrder: 1,
